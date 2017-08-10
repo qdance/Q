@@ -8,7 +8,7 @@ let libRoot = [
    		'lib/html/HtmlManager.js',
   		'Settings.js'
   		]
-
+ 
 class engine { 
 	
 	constructor() {
