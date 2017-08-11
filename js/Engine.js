@@ -1,4 +1,7 @@
-
+/*
+ * @desc Library core file list
+ * @var array
+ */
 let libRoot = [
 		'lib/interfaces/LibInterfaces.js',					 
    		'lib/utils/UtilManager.js', 
@@ -9,46 +12,63 @@ let libRoot = [
   		'Settings.js'
   		]
  
+ /*
+  * @desc Q library - Engine class
+  * @author Sven Macolic | macolic.sven@gmail.com | 08/2017
+  */
 class engine { 
 	
+	/*
+	 * @desc Class constructor
+	 * @return void
+	 */
 	constructor() {
 		this.interfaces = {}
 		if(this.loadLib())
 			window.onload = () => this.loadLib(true)
 	}
 
+	/*
+	 * @desc Loading library
+	 * @param (boolean) ext - To load custom user settings
+	 * @return boolean
+	 */
 	loadLib(ext) {
 		let head = document.querySelector('HEAD')
 		let externals = []
 		if(ext) {			
-			for(let root in this.settings.externalCSS) {
+			Object.keys(this.settings.externalCSS).forEach((root) => {
 				let link = document.createElement('LINK')
 				link.type = 'text/css'
 				link.rel = 'stylesheet'
 				link.href = 'js/external/'+root+'/css/'+this.settings.externalCSS[root];	
 				head.insertBefore(link, document.querySelector('SCRIPT'))
-			}
-			for(let root in this.settings.externalJS)
-				externals.push('external/'+root+'/js/'+this.settings.externalJS[root])
+			})
+			Object.keys(this.settings.externalJS).forEach((root) => externals.push('external/'+root+'/js/'+this.settings.externalJS[root]))
 			externals.reverse()
-			for(let ex in externals) {
+			Object.keys(externals).forEach((ex) => {
 				let script = document.createElement('SCRIPT')
 				script.type = 'text/javascript'
 				script.src = 'js/' + externals[ex]
 				head.insertBefore(script, document.querySelector('SCRIPT'))
-			}
+			})
 		}
-		for(let i in ext ? this.settings.libRoot : libRoot) {
+		Object.keys(ext ? this.settings.libRoot : libRoot).forEach((i) => {
 			let script = document.createElement('SCRIPT')
 			script.type = 'text/javascript'
 			script.src = 'js/' + (!ext ? libRoot[i] : this.settings.libRoot[i])
 			ext ? 
 				head.insertAdjacentElement('beforeend', script) :
 					head.insertBefore(script, document.querySelector('SCRIPT')[0+i])				
-		}
+		})
 		return true		
 	}
 
+	/*
+	 * @desc Register library classes
+	 * @param (object) obj - Class to register
+	 * @return void
+	 */
 	set use(obj) {	
 		let methods = []
 		switch(obj.constructor) {
@@ -62,49 +82,70 @@ class engine {
 				obj.name == 'interfaces' ?
 					Object.assign(this.interfaces, obj) :
 						this[obj.name] = obj
-				for(let property in this[obj.name])
-					methods.push(property)
+				Object.keys(this[obj.name]).forEach((property) => methods.push(property))					
 			break;
 		}
-		for(let i in methods) {
+
+		Object.keys(methods).forEach((i) => {
 			if(obj.name == 'settings' || 
 				obj.name == 'interfaces')
-				continue
+					return
 			this.interfaceExists(obj.name, methods[i])  
-		}
+		})
 	}
 
+	/*
+	 * @desc Subscribe events
+	 * @param (object) ev - Event collection
+	 * @return void
+	 */
 	set events(ev) {
 		let evtSort = {}
 		evtSort.before = []
 		evtSort.currnt = []
 		evtSort.after = []
-		for(let e in ev) {
+		Object.keys(ev).forEach((e) => {
 			if(this.evntMngr.evtList.indexOf(ev[e].evt) == -1)
 				throw new TypeError('Event type does not exist in event list.')
-			if(ev[e].evt.indexOf('before') != -1)
+			ev[e].evt.indexOf('before') != -1 &&
 				evtSort.before.push(ev[e])
-			if(ev[e].evt.indexOf('before') == -1 && 
-				ev[e].evt.indexOf('after') == -1)
+			ev[e].evt.indexOf('before') == -1 && 
+				ev[e].evt.indexOf('after') == -1 && 
 					evtSort.currnt.push(ev[e])
-			if(ev[e].evt.indexOf('after') != -1)
+			ev[e].evt.indexOf('after') != -1 &&
 				evtSort.after.push(ev[e])
-		}
+		})
 		this.evntMngr.applyEvent(evtSort) 
 	}
 
+	/*
+	 * @desc Apply layout
+	 * @return void
+	 */
 	setLayout() {
 		this.lytMngr.applyLayout()
 	}
 
+	/*
+	 * @desc Check defined interface list
+	 * @params (string) cls - Class name
+	 * @params (string) method - Class method name
+	 * @return void
+	 */
 	interfaceExists(cls, method) {
 		if(typeof this.interfaces[cls] == 'undefined')
 			throw new ReferenceError('Class ['+cls+'] is not registered.')
-		for(let i in method)
-				if(this.interfaces[cls].methods.indexOf(method[i]) == -1)
-					throw new ReferenceError('Method ['+method[i]+'] in class ['+cls+'] is not registered.')
+		Object.keys(method).forEach((i) => {
+			if(this.interfaces[cls].methods.indexOf(method[i]) == -1)
+				throw new ReferenceError('Method ['+method[i]+'] in class ['+cls+'] is not registered.')
+		})
 	}
 
+	/*
+	 * @desc Iterate registered classes methods
+	 * @params (object) obj - Class to iterate
+	 * @return array
+	 */
 	getAllMethods(obj) {
 		let props = []
 	    do {
