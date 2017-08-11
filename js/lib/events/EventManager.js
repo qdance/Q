@@ -37,7 +37,7 @@ class evntMngr {
 		let objMap = Object.keys(obj).map((o) => {
 			for(let i in obj[o]) {
 				let key = obj[o][i].obj.id
-				if(typeof el[key] == 'undefined') {
+				if(el[key] == undefined) {
 					el[key] = {}
 					el[key].owner = obj[o][i].obj;
 				}
@@ -49,14 +49,12 @@ class evntMngr {
 		for(let i in objMap)
 			Object.assign(evtObj, objMap[i])
 
-		for(let o in evtObj) {
-			for(let e in evtObj[o]) {
+		for(let o in evtObj)
+			for(let e in evtObj[o])
 				if(e.indexOf('before') == -1 && 
 					e.indexOf('after') == -1 && 
 						e.indexOf('owner') == -1) 
 							this.setEvent(evtObj[o], e)
-			}
-		}
 	}
 
 	setEvent(obj, e) {
@@ -72,8 +70,8 @@ class evntMngr {
 			case 'change':
 			case 'select':
 				obj.owner.addEventListener(e, () => {
-					typeof obj['before'+e] != 'undefined' ?
-						typeof obj['after'+e] != 'undefined' ?
+					obj['before'+e] != undefined ?
+						obj['after'+e] != undefined ?
 							this.beforeEvent(obj['before'+e], obj[e], obj['after'+e]) :
 								this.beforeEvent(obj['before'+e], obj[e]) :
 						this.currentEvent(obj[e], obj['after'+e])
@@ -110,8 +108,8 @@ class evntMngr {
 
 	eventHub(mutation, obj) {
 	    let e = this.eventParse(mutation, mutation.target.isParent ? true : false)
-		typeof obj['before'+e] != 'undefined' ?
-			typeof obj['after'+e] != 'undefined' ?
+		obj['before'+e] != undefined ?
+			obj['after'+e] != undefined ?
 				mutation.type == 'childList' ? 
 					this.domEvent(mutation, this.beforeEvent(obj['before'+e], obj[e], obj['after'+e]), e) :
 						this.attrEvent(mutation, this.beforeEvent(obj['before'+e], obj[e], obj['after'+e]), e) :
@@ -145,11 +143,9 @@ class evntMngr {
 			if(obj.removedNodes.length > 0)
 				return prnt ? 'removed' : 'remove'
 		}
-		if(obj.type == 'attributes') {
-			if(obj.attributeName == 'style') {
+		if(obj.type == 'attributes')
+			if(obj.attributeName == 'style')
 				return obj.target.style.display == 'none' ? 'hide' : 'show'
-			}
-		}
 	}
 
 }
