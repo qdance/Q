@@ -178,11 +178,9 @@ class evntMngr {
 	domEvent(mutation, fn, e) {
 		if(!fn) return
 		(e == 'add' || e == 'added') &&
-			mutation.addedNodes.length > 0 &&
-				fn
+			mutation.addedNodes.length > 0 && fn
 		(e == 'remove' || e == 'removed') &&
-			mutation.removedNodes.length > 0 &&
-				fn
+			mutation.removedNodes.length > 0 && fn
 	}
 
 	/*
