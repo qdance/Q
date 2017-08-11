@@ -47,8 +47,8 @@ class utlMngr {
 	 * @param (string) url - Http request uri
 	 * @return string
 	 */
-	set xhrUrl(uri) {
-		this.xhrurl = uri
+	set xhrUri(uri) {
+		this.xhruri = uri
 	}
 
 	/*
@@ -118,7 +118,7 @@ class utlMngr {
 			if(!args.fn)
 				throw new ReferenceError('Error [key:fn]: Request callback function is not defined.')
 			this.xhrMethod = args.method
-			this.xhrUrl = args.uri
+			this.xhrUri = args.uri
 			this.xhrParams = args.params
 			this.xhrCallback = args.fn
 		}
