@@ -26,14 +26,17 @@ class evntMngr {
 			'beforeshow', 'show', 'aftershow',
 			'beforehide', 'hide', 'afterhide'
 		]	
-		this.observer = new MutationObserver((mutations) => {
-			mutations.forEach((mutation) => this.eventHub(mutation, this.eventSet[mutation.target.id]))
-		})
+
+		this.observer = new MutationObserver((mutations) => 
+			mutations.forEach((mutation) => 
+				this.eventHub(mutation, this.eventSet[mutation.target.id])))
+
  		this.observerConfig = { 
  			childList: true, 
  			attributes: true, 
  			attributeOldValue: true
  		}
+
  		this.eventSet = []
  		this.currentEventName = []
 	}
@@ -46,6 +49,7 @@ class evntMngr {
 	applyEvent(obj) {
 		let evtObj = {}
 		let el = {}
+
 		let objMap = Object.keys(obj).map((k) => {
 			Object.keys(obj[k]).forEach((i) => {
 				let key = obj[k][i].obj.id
