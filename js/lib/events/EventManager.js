@@ -1,6 +1,13 @@
-
+/*
+ * @desc Q library - Event manager class
+ * @author Sven Macolic | macolic.sven@gmail.com | 08/2017
+ */
 class evntMngr {
-	
+
+	/*
+	 * @desc Class constructor
+	 * @return void
+	 */
 	constructor() {
 		this.evtList = [
 			'beforeclick', 'click', 'afterclick',
@@ -31,6 +38,11 @@ class evntMngr {
  		this.currentEventName = []
 	}
 
+	/*
+	 * @desc Mapping event collection
+	 * @param (object) obj - event collection
+	 * @return object
+	 */
 	applyEvent(obj) {
 		let evtObj = {}
 		let el = {}
@@ -57,6 +69,12 @@ class evntMngr {
 							this.setEvent(evtObj[o], e)
 	}
 
+	/*
+	 * @desc Subscribe events
+	 * @param (object) obj - event collection
+	 * @param (string) e - event name
+	 * @return void
+	 */
 	setEvent(obj, e) {
 		this.currentEventName[obj.owner.id] = []
 		switch(e) {
@@ -93,19 +111,12 @@ class evntMngr {
 		}
 	}
 
-	beforeEvent(beforeFn, currentFn, afterFn) {
-		beforeFn()
-		currentFn()
-		if(afterFn) 
-			afterFn()
-	}
-
-	currentEvent(currentFn, afterFn) {
-		currentFn()
-		if(afterFn) 
-			afterFn()
-	}
-
+	/*
+	 * @desc Mutation events placeholder
+	 * @param (object) mutation - mutation object
+	 * @param (object) obj - event collection
+	 * @return void
+	 */
 	eventHub(mutation, obj) {
 	    let e = this.eventParse(mutation, mutation.target.isParent ? true : false)
 		obj['before'+e] != undefined ?
@@ -121,21 +132,12 @@ class evntMngr {
 								this.attrEvent(mutation, this.currentEvent(obj[e], obj['after'+e]), e)
 	}
 
-	domEvent(mutation, fn, e) {
-		fn
-	}
-
-	attrEvent(mutation, fn, e) {
-		if(mutation.attributeName == 'style' && 
-			e == 'show' && 
-			mutation.target.getAttribute('style').indexOf('block') != -1)
-				fn
-		if(mutation.attributeName == 'style' && 
-			e == 'hide' && 
-			mutation.target.getAttribute('style').indexOf('none') != -1)
-				fn
-	}
-
+	/*
+	 * @desc Detect mutation event name
+	 * @param (obj) obj - mutation object
+	 * @param (boolean) prnt - check if event is triggered by parent dom node
+	 * @return string
+	 */
 	eventParse(obj, prnt) {
 		if(obj.type == 'childList') {
 			if(obj.addedNodes.length > 0)
@@ -146,6 +148,61 @@ class evntMngr {
 		if(obj.type == 'attributes')
 			if(obj.attributeName == 'style')
 				return obj.target.style.display == 'none' ? 'hide' : 'show'
+	}
+
+	/*
+	 * @desc Event placeholder on before event subscription
+	 * @param (function) beforeFn - action to trigger before an event
+	 * @param (function) currentFn - action to trigger on event
+	 * @param (function) afterFn - action to trigger after an event
+	 * @return void
+	 */
+	beforeEvent(beforeFn, currentFn, afterFn) {
+		beforeFn()
+		currentFn()
+		if(afterFn) 
+			afterFn()
+	}
+
+	/*
+	 * @desc Event placeholder on event subscription
+	 * @param (function) currentFn - action to trigger on event
+	 * @param (function) afterFn - action to trigger after an event
+	 * @return void
+	 */
+	currentEvent(currentFn, afterFn) {
+		currentFn()
+		if(afterFn) 
+			afterFn()
+	}
+
+	/*
+	 * @desc Event placeholder for dom event subscription
+	 * @param (object) mutation - mutation object
+	 * @param (function) fn - action to trigger
+	 * @param (string) e - event name
+	 * @return void
+	 */
+	domEvent(mutation, fn, e) {
+		fn
+	}
+
+	/*
+	 * @desc Event placeholder for attriobute event subscription
+	 * @param (object) mutation - mutation object
+	 * @param (function) fn - action to trigger
+	 * @param (string) e - event name
+	 * @return void
+	 */
+	attrEvent(mutation, fn, e) {
+		if(mutation.attributeName == 'style' && 
+			e == 'show' && 
+			mutation.target.getAttribute('style').indexOf('block') != -1)
+				fn
+		if(mutation.attributeName == 'style' && 
+			e == 'hide' && 
+			mutation.target.getAttribute('style').indexOf('none') != -1)
+				fn
 	}
 
 }
