@@ -19,11 +19,9 @@ class utlMngr {
 		this.xhrparams = ''
 		this.callbackFn = null
 		this.xhrType = 'text' 
-		this.oXhr.onreadystatechange = function() {
-	  		this.readyState == 4 && 
-	  			this.status == 200 &&
-		    		Q.utlMngr.callbackFn(Q.utlMngr.xhrResponse(this))
-		}
+		this.oXhr.onreadystatechange = (response) => response.readyState == 4 && 
+	  													response.status == 200 &&
+		    												Q.utlMngr.callbackFn(Q.utlMngr.xhrResponse(response))
 	}
 
 	/*
