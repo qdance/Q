@@ -49,10 +49,9 @@ class evntMngr {
 		let objMap = Object.keys(obj).map((k) => {
 			Object.keys(obj[k]).forEach((i) => {
 				let key = obj[k][i].obj.id
-				if(el[key] == undefined) {
+				if(el[key] == undefined)
 					el[key] = {}
-					el[key].owner = obj[k][i].obj;
-				}
+				el[key].owner = obj[k][i].obj;
 				el[key][obj[k][i].evt] = obj[k][i].fn
 			})
 			return el
@@ -93,7 +92,7 @@ class evntMngr {
 						obj['after'+e] != undefined ?
 							this.beforeEvent(obj['before'+e], obj[e], obj['after'+e]) :
 								this.beforeEvent(obj['before'+e], obj[e]) :
-						this.currentEvent(obj[e], obj['after'+e])
+							this.currentEvent(obj[e], obj['after'+e])
 				})
 			break
 			case 'add':
@@ -124,7 +123,7 @@ class evntMngr {
 			obj['after'+e] != undefined ?
 				this[mutation.type == 'childList' ? 'domEvent' : 'attrEvent'](mutation, this.beforeEvent(obj['before'+e], obj[e], obj['after'+e]), e) :
 					this[mutation.type == 'childList' ? 'domEvent' : 'attrEvent'](mutation, this.beforeEvent(obj['before'+e], obj[e]), e) :
-						this[mutation.type == 'childList' ? 'domEvent' : 'attrEvent'](mutation, this.currentEvent(obj[e], obj['after'+e]), e)
+				this[mutation.type == 'childList' ? 'domEvent' : 'attrEvent'](mutation, this.currentEvent(obj[e], obj['after'+e]), e)
 	}
 
 	/*
@@ -194,14 +193,10 @@ class evntMngr {
 	 * @return void
 	 */
 	attrEvent(mutation, fn, e) {
-		mutation.attributeName == 'style' && 
-			e == 'show' && 
-				mutation.target.getAttribute('style').indexOf('block') != -1 &&
-					fn
-		mutation.attributeName == 'style' && 
-			e == 'hide' && 
-				mutation.target.getAttribute('style').indexOf('none') != -1 &&
-					fn
+		mutation.attributeName == 'style' && e == 'show' && 
+			mutation.target.getAttribute('style').indexOf('block') != -1 && fn
+		mutation.attributeName == 'style' && e == 'hide' && 
+			mutation.target.getAttribute('style').indexOf('none') != -1 && fn
 	}
 
 }
