@@ -37,23 +37,23 @@ class engine {
 		let head = document.querySelector('HEAD')
 		let externals = []
 		if(ext) {			
-			Object.keys(this.settings.externalCSS).forEach((root) => {
+			Object.keys(this.settings.externalCSS).forEach(root => {
 				let link = document.createElement('LINK')
 				link.type = 'text/css'
 				link.rel = 'stylesheet'
 				link.href = 'js/external/'+root+'/css/'+this.settings.externalCSS[root];	
 				head.insertBefore(link, document.querySelector('SCRIPT'))
 			})
-			Object.keys(this.settings.externalJS).forEach((root) => externals.push('external/'+root+'/js/'+this.settings.externalJS[root]))
+			Object.keys(this.settings.externalJS).forEach(root => externals.push('external/'+root+'/js/'+this.settings.externalJS[root]))
 			externals.reverse()
-			Object.keys(externals).forEach((ex) => {
+			Object.keys(externals).forEach(ex => {
 				let script = document.createElement('SCRIPT')
 				script.type = 'text/javascript'
 				script.src = 'js/' + externals[ex]
 				head.insertBefore(script, document.querySelector('SCRIPT'))
 			})
 		}
-		Object.keys(ext ? this.settings.libRoot : libRoot).forEach((i) => {
+		Object.keys(ext ? this.settings.libRoot : libRoot).forEach(i => {
 			let script = document.createElement('SCRIPT')
 			script.type = 'text/javascript'
 			script.src = 'js/' + (!ext ? libRoot[i] : this.settings.libRoot[i])
@@ -82,11 +82,11 @@ class engine {
 				obj.name == 'interfaces' ?
 					Object.assign(this.interfaces, obj) :
 						this[obj.name] = obj
-				Object.keys(this[obj.name]).forEach((property) => methods.push(property))					
+				Object.keys(this[obj.name]).forEach(property => methods.push(property))					
 			break;
 		}
 
-		Object.keys(methods).forEach((i) => {
+		Object.keys(methods).forEach(i => {
 			if(obj.name == 'settings' || 
 				obj.name == 'interfaces')
 					return
@@ -104,7 +104,7 @@ class engine {
 		evtSort.before = []
 		evtSort.currnt = []
 		evtSort.after = []
-		Object.keys(ev).forEach((e) => {
+		Object.keys(ev).forEach(e => {
 			if(this.evntMngr.evtList.indexOf(ev[e].evt) == -1)
 				throw new TypeError('Event type does not exist in event list.')
 			ev[e].evt.indexOf('before') != -1 &&
@@ -135,7 +135,7 @@ class engine {
 	interfaceExists(cls, method) {
 		if(typeof this.interfaces[cls] == 'undefined')
 			throw new ReferenceError('Class ['+cls+'] is not registered.')
-		Object.keys(method).forEach((i) => {
+		Object.keys(method).forEach(i => {
 			if(this.interfaces[cls].methods.indexOf(method[i]) == -1)
 				throw new ReferenceError('Method ['+method[i]+'] in class ['+cls+'] is not registered.')
 		})
@@ -153,7 +153,7 @@ class engine {
 	            .concat(Object.getOwnPropertySymbols(obj).map(s => s.toString()))
 	            .sort()
 	            .filter((p, i, arr) =>
-	                typeof obj[p] === 'function' && 
+	                obj[p].constructor === Function && 
 	                	p !== 'constructor' &&       
 	                		(i == 0 || p !== arr[i - 1]) &&  
 	                			props.indexOf(p) === -1     
