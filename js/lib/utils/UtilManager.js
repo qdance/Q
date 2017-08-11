@@ -19,9 +19,11 @@ class utlMngr {
 		this.xhrparams = ''
 		this.callbackFn = null
 		this.xhrType = 'text' 
-		this.oXhr.onreadystatechange = (response) => response.readyState == 4 && 
-	  													response.status == 200 &&
-		    												Q.utlMngr.callbackFn(Q.utlMngr.xhrResponse(response))
+		this.oXhr.onreadystatechange = function() {
+			this.readyState == 4 && 
+				this.status == 200 &&
+					Q.utlMngr.callbackFn(Q.utlMngr.xhrResponse(this))
+		}
 	}
 
 	/*
@@ -121,7 +123,7 @@ class utlMngr {
 			this.xhrCallback = args.fn
 		}
 		this.oXhr.open(this.xhrMethod, this.xhrUri, true)
-		Object.keys(this.xhrHeaders).forEach((header) => this.oXhr.setRequestHeader(this.xhrHeaders[header].key, this.xhrHeaders[header].value))
+		Object.keys(this.xhrHeaders).forEach(header => this.oXhr.setRequestHeader(this.xhrHeaders[header].key, this.xhrHeaders[header].value))
 		this.oXhr.send(this.xhrmethod.toLowerCase() == 'post' ? this.xhrParams : null)
 	}
 
