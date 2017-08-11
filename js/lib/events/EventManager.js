@@ -46,27 +46,28 @@ class evntMngr {
 	applyEvent(obj) {
 		let evtObj = {}
 		let el = {}
-		let objMap = Object.keys(obj).map((o) => {
-			for(let i in obj[o]) {
-				let key = obj[o][i].obj.id
+		let objMap = Object.keys(obj).map((k) => {
+			Object.keys(obj[k]).forEach((i) => {
+				let key = obj[k][i].obj.id
 				if(el[key] == undefined) {
 					el[key] = {}
-					el[key].owner = obj[o][i].obj;
+					el[key].owner = obj[k][i].obj;
 				}
-				el[key][obj[o][i].evt] = obj[o][i].fn
-			}
+				el[key][obj[k][i].evt] = obj[k][i].fn
+			})
 			return el
 		})
 
-		for(let i in objMap)
-			Object.assign(evtObj, objMap[i])
+		Object.keys(objMap).forEach((k) => Object.assign(evtObj, objMap[k]))
 
-		for(let o in evtObj)
-			for(let e in evtObj[o])
-				if(e.indexOf('before') == -1 && 
+		Object.keys(evtObj).forEach((o) => {
+			Object.keys(evtObj[o]).forEach((e) => {
+				e.indexOf('before') == -1 && 
 					e.indexOf('after') == -1 && 
-						e.indexOf('owner') == -1) 
+						e.indexOf('owner') == -1 &&
 							this.setEvent(evtObj[o], e)
+			})
+		})
 	}
 
 	/*
@@ -164,7 +165,7 @@ class evntMngr {
 	 */
 	currentEvent(currentFn, afterFn) {
 		currentFn()
-		if(afterFn) 
+		afterFn && 
 			afterFn()
 	}
 
@@ -176,11 +177,12 @@ class evntMngr {
 	 * @return void
 	 */
 	domEvent(mutation, fn, e) {
-		if((e == 'add' || e == 'added') &&
-			mutation.addedNodes.length > 0)
+		if(!fn) return
+		(e == 'add' || e == 'added') &&
+			mutation.addedNodes.length > 0 &&
 				fn
-		if((e == 'remove' || e == 'removed') &&
-			mutation.removedNodes.length > 0)
+		(e == 'remove' || e == 'removed') &&
+			mutation.removedNodes.length > 0 &&
 				fn
 	}
 
@@ -192,14 +194,14 @@ class evntMngr {
 	 * @return void
 	 */
 	attrEvent(mutation, fn, e) {
-		if(mutation.attributeName == 'style' && 
+		mutation.attributeName == 'style' && 
 			e == 'show' && 
-			mutation.target.getAttribute('style').indexOf('block') != -1)
-				fn
-		if(mutation.attributeName == 'style' && 
+				mutation.target.getAttribute('style').indexOf('block') != -1 &&
+					fn
+		mutation.attributeName == 'style' && 
 			e == 'hide' && 
-			mutation.target.getAttribute('style').indexOf('none') != -1)
-				fn
+				mutation.target.getAttribute('style').indexOf('none') != -1 &&
+					fn
 	}
 
 }
