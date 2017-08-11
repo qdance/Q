@@ -27,8 +27,8 @@ class evntMngr {
 			'beforehide', 'hide', 'afterhide'
 		]	
 
-		this.observer = new MutationObserver((mutations) => 
-			mutations.forEach((mutation) => 
+		this.observer = new MutationObserver(mutations => 
+			mutations.forEach(mutation => 
 				this.eventHub(mutation, this.eventSet[mutation.target.id])))
 
  		this.observerConfig = { 
@@ -50,8 +50,8 @@ class evntMngr {
 		let evtObj = {}
 		let el = {}
 
-		let objMap = Object.keys(obj).map((k) => {
-			Object.keys(obj[k]).forEach((i) => {
+		let objMap = Object.keys(obj).map(k => {
+			Object.keys(obj[k]).forEach(i => {
 				let key = obj[k][i].obj.id
 				if(el[key] == undefined)
 					el[key] = {}
@@ -61,10 +61,10 @@ class evntMngr {
 			return el
 		})
 
-		Object.keys(objMap).forEach((k) => Object.assign(evtObj, objMap[k]))
+		Object.keys(objMap).forEach(k => Object.assign(evtObj, objMap[k]))
 
-		Object.keys(evtObj).forEach((o) => {
-			Object.keys(evtObj[o]).forEach((e) => {
+		Object.keys(evtObj).forEach(o => {
+			Object.keys(evtObj[o]).forEach(e => {
 				e.indexOf('before') == -1 && 
 					e.indexOf('after') == -1 && 
 						e.indexOf('owner') == -1 &&
@@ -122,7 +122,7 @@ class evntMngr {
 	 * @return void
 	 */
 	eventHub(mutation, obj) {
-	    let e = this.eventParse(mutation, mutation.target.isParent ? true : false)
+	    let e = this.eventParse(mutation, mutation.target.isParent ? true : false) 
 		obj['before'+e] != undefined ?
 			obj['after'+e] != undefined ?
 				this[mutation.type == 'childList' ? 'domEvent' : 'attrEvent'](mutation, this.beforeEvent(obj['before'+e], obj[e], obj['after'+e]), e) :
