@@ -153,7 +153,7 @@ class engine {
 	            .concat(Object.getOwnPropertySymbols(obj).map(s => s.toString()))
 	            .sort()
 	            .filter((p, i, arr) =>
-	                obj[p].constructor === Function && 
+	                typeof obj[p] === 'function' && 
 	                	p !== 'constructor' &&       
 	                		(i == 0 || p !== arr[i - 1]) &&  
 	                			props.indexOf(p) === -1     
