@@ -87,10 +87,9 @@ class engine {
 		}
 
 		Object.keys(methods).forEach(i => {
-			if(obj.name == 'settings' || 
-				obj.name == 'interfaces')
-					return
-			this.interfaceExists(obj.name, methods[i])  
+			(obj.name != 'settings' || 
+				obj.name != 'interfaces') &&
+					this.interfaceExists(obj.name, methods[i])  
 		})
 	}
 
