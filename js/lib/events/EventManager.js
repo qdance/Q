@@ -121,15 +121,9 @@ class evntMngr {
 	    let e = this.eventParse(mutation, mutation.target.isParent ? true : false)
 		obj['before'+e] != undefined ?
 			obj['after'+e] != undefined ?
-				mutation.type == 'childList' ? 
-					this.domEvent(mutation, this.beforeEvent(obj['before'+e], obj[e], obj['after'+e]), e) :
-						this.attrEvent(mutation, this.beforeEvent(obj['before'+e], obj[e], obj['after'+e]), e) :
-					mutation.type == 'childList' ? 
-						this.domEvent(mutation, this.beforeEvent(obj['before'+e], obj[e]), e) :
-							this.attrEvent(mutation, this.beforeEvent(obj['before'+e], obj[e]), e) :
-						mutation.type == 'childList' ? 
-							this.domEvent(mutation, this.currentEvent(obj[e], obj['after'+e]), e) :
-								this.attrEvent(mutation, this.currentEvent(obj[e], obj['after'+e]), e)
+				this[mutation.type == 'childList' ? 'domEvent' : 'attrEvent'](mutation, this.beforeEvent(obj['before'+e], obj[e], obj['after'+e]), e) :
+					this[mutation.type == 'childList' ? 'domEvent' : 'attrEvent'](mutation, this.beforeEvent(obj['before'+e], obj[e]), e) :
+						this[mutation.type == 'childList' ? 'domEvent' : 'attrEvent'](mutation, this.currentEvent(obj[e], obj['after'+e]), e)
 	}
 
 	/*
@@ -159,9 +153,7 @@ class evntMngr {
 	 */
 	beforeEvent(beforeFn, currentFn, afterFn) {
 		beforeFn()
-		currentFn()
-		if(afterFn) 
-			afterFn()
+		this.currentEvent(currentFn, afterFn)
 	}
 
 	/*
@@ -184,7 +176,12 @@ class evntMngr {
 	 * @return void
 	 */
 	domEvent(mutation, fn, e) {
-		fn
+		if((e == 'add' || e == 'added') &&
+			mutation.addedNodes.length > 0)
+				fn
+		if((e == 'remove' || e == 'removed') &&
+			mutation.removedNodes.length > 0)
+				fn
 	}
 
 	/*
